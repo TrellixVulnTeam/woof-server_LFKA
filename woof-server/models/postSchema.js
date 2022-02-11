@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const PostSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   title: String,
+  content: Object,
+  authorName: String,
   timeOfCreation: { type: Date, default: Date.now() },
   likes: [mongoose.Schema.Types.ObjectId],
   disLikes: [mongoose.Schema.Types.ObjectId],
