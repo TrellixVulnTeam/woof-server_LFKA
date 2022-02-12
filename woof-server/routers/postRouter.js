@@ -3,8 +3,8 @@ const router = express.Router();
 const postService = require("../services/postService");
 
 router.get("/", async (req, res, next) => {
-  const auth = req.params.id;
-  const getAllFeedPosts = await postService.getAllFeedPosts(auth);
+  const authId = req.params.id;
+  const getAllFeedPosts = await postService.getAllFeedPosts(authId);
 
   res.json(getAllFeedPosts);
 });
