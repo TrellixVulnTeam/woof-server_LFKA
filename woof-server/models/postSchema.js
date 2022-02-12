@@ -2,16 +2,22 @@ const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
-  title: String,
-  content: Object,
+  content: {
+    img: String,
+    text: String,
+  },
   authorName: String,
   timeOfCreation: { type: Date, default: Date.now() },
-  likes: [mongoose.Schema.Types.ObjectId],
-  disLikes: [mongoose.Schema.Types.ObjectId],
+  reactions: [
+    {
+      name: String,
+      reaction: String,
+    },
+  ],
   comments: [
     {
-      id: mongoose.Schema.Types.ObjectId,
-      likes: [mongoose.Schema.Types.ObjectId],
+      name: String,
+      comment: String,
     },
   ],
 });

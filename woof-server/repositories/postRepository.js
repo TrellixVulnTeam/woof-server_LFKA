@@ -10,7 +10,7 @@ const findById = async (id) => {
 };
 
 const findPostsById = async (postsToFind) => {
-  return await PostSchema.find({ posts: { $in: postsToFind } });
+  return await PostSchema.find({ posts: { $in: postsToFind } }).lean();
 };
 
 module.exports = {

@@ -15,15 +15,14 @@ const getAllFeedPosts = async (authId) => {
       allFriendsPostsCombined
     );
 
-    for (let postIndex = 0; postIndex < allFriendsPosts.length; postIndex++) {
-      allFriendsPosts[postIndex].timeOfCreation = moment(
-        allFriendsPosts[postIndex].timeOfCreation
-      )
+    allFriendsPosts.map((post) => {
+      post.timeOfCreation = moment(post.timeOfCreation)
         .startOf("hour")
         .fromNow();
-    }
 
-    console.log("----", allFriendsPosts);
+      return post;
+    });
+
     return allFriendsPosts;
   }
 
