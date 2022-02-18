@@ -2,10 +2,7 @@ const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
-  content: {
-    img: String,
-    text: String,
-  },
+  image: String,
   authorName: String,
   timeOfCreation: { type: Date, default: Date.now() },
   reactions: [

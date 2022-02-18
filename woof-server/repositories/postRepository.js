@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const PostSchema = require("../models/postSchema");
 
 const find = async (condition) => {
@@ -13,8 +12,13 @@ const findPostsById = async (postsToFind) => {
   return await PostSchema.find({ posts: { $in: postsToFind } }).lean();
 };
 
+const addPost = async (title, image) => {
+  return await PostSchema.create({ title, image });
+};
+
 module.exports = {
   findById,
   find,
   findPostsById,
+  addPost,
 };

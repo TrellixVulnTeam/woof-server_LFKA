@@ -29,6 +29,11 @@ const getAllFeedPosts = async (authId) => {
   return [];
 };
 
+const addPost = async (authId, title, image) => {
+  return await postRepository.addPost(title, image);
+};
+
 module.exports = {
   getAllFeedPosts,
+  addPost,
 };
