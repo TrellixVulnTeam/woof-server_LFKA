@@ -7,13 +7,25 @@ const getAllUserFriends = async (authId) => {
   });
 };
 
-const register = async (name, password, image) => {
-  const newUser = await userRepository.find({ name, password });
-  console.log("---", newUser);
-  if (newUser.length === 0) {
-    const token = jwt.sign({ name, password }, "shhhhh");
-    const newUser = await userRepository.register(name, token, image);
-    return newUser;
+const register = async (userName, profileImage, password, confirmPassword) => {
+  const existingUser = await userRepository.find({ userName, password });
+
+  if (existingUser.length === 0) {
+    if (password === confirmPassword) {
+      const token = jwt.sign({ userName, password }, "shhhhh");
+
+      const newUser = await userRepository.register(
+        userName,
+        token,
+        profileImage
+      );
+      return newUser;
+    } else {
+      return {
+        ok: false,
+        error: "Password and Confirm password don't match",
+      };
+    }
   }
 };
 
