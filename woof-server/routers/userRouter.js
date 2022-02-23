@@ -17,4 +17,15 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.post("/login", async (req, res, next) => {
+  try {
+    const { userName, password } = req.body;
+    const user = await userService.login(userName, password);
+    console.log("----asdasd--", user);
+    res.json(user);
+  } catch (error) {
+    console.log("Error logging in: ", error);
+  }
+});
+
 module.exports = router;

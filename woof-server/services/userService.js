@@ -1,5 +1,7 @@
 const userRepository = require("../repositories/userRepository");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 const getAllUserFriends = async (authId) => {
   return await userRepository.find({
@@ -8,28 +10,69 @@ const getAllUserFriends = async (authId) => {
 };
 
 const register = async (userName, profileImage, password, confirmPassword) => {
-  const existingUser = await userRepository.find({ userName, password });
+  const hashedPassword = await bcrypt.hash(password, 4);
+  const existingUser = await userRepository.find({
+    userName,
+    password: hashedPassword,
+  });
 
   if (existingUser.length === 0) {
     if (password === confirmPassword) {
-      const token = jwt.sign({ userName, password }, "shhhhh");
-
-      const newUser = await userRepository.register(
+      const registeredUser = await userRepository.register(
         userName,
-        token,
+        hashedPassword,
         profileImage
       );
-      return newUser;
+
+      return {
+        user: registeredUser,
+        token: generateToken(userName, hashedPassword),
+      };
     } else {
       return {
         ok: false,
         error: "Password and Confirm password don't match",
       };
     }
+  } else {
+    return {
+      ok: false,
+      error: "User already exists",
+    };
   }
+};
+
+const login = async (userName, password) => {
+  const existingUser = await userRepository.find({
+    userName,
+  });
+
+  const isPasswordsMatch = await bcrypt.compare(
+    password,
+    existingUser.password
+  );
+
+  console.log("----", isPasswordsMatch);
+
+  if (existingUser.length === 0 || !isPasswordsMatch) {
+    return {
+      ok: false,
+      error: "Sorry, credentials do not match",
+    };
+  } else {
+    return {
+      user: existingUser,
+      token: generateToken(userName, existingUser.password),
+    };
+  }
+};
+
+const generateToken = (userName, password) => {
+  return jwt.sign({ userName, password }, process.env.AUTH_TOKEN_STAGING);
 };
 
 module.exports = {
   getAllUserFriends,
   register,
+  login,
 };
