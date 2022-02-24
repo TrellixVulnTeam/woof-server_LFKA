@@ -18,7 +18,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 const port = 3015;
 app.use(cors());
 
-app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json());
 

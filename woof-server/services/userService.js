@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const getAllUserFriends = async (authId) => {
   return await userRepository.find({
-    friends: { $in: "61daf0357d91c7a6c507feac" },
+    friends: { $in: "6217f373ab26125ed4192d50" },
   });
 };
 
@@ -43,18 +43,18 @@ const register = async (userName, profileImage, password, confirmPassword) => {
 };
 
 const login = async (userName, password) => {
-  const existingUser = await userRepository.find({
+  const existingUserRes = await userRepository.find({
     userName,
   });
+
+  const existingUser = existingUserRes[0];
 
   const isPasswordsMatch = await bcrypt.compare(
     password,
     existingUser.password
   );
 
-  console.log("----", isPasswordsMatch);
-
-  if (existingUser.length === 0 || !isPasswordsMatch) {
+  if (existingUserRes.length === 0 || !isPasswordsMatch) {
     return {
       ok: false,
       error: "Sorry, credentials do not match",
