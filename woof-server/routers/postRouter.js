@@ -18,10 +18,16 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const authId = req.params.id;
   const { title, image } = req.body;
-  const addedPost = await postService.addPost(authId, title, image);
 
+  const token = req.headers.authorization.replace("Bearer ", "");
+  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+  const user = await userService.findOne({
+    userName: decodedToken.userName,
+    password: decodedToken.password,
+  });
+
+  const addedPost = await postService.addPost(user, title, image);
   res.json(addedPost);
 });
 

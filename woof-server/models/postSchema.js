@@ -4,7 +4,11 @@ const PostSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   image: String,
   title: String,
-  authorName: String,
+  author: {
+    name: String,
+    image: String,
+    id: mongoose.Schema.Types.ObjectId,
+  },
   timeOfCreation: { type: Date, default: Date.now() },
   reactions: [
     {

@@ -8,17 +8,30 @@ const findById = async (id) => {
   return await PostSchema.findById(id);
 };
 
-const findPostsById = async (postsToFind) => {
+const findPostsByIds = async (postsToFind) => {
   return await PostSchema.find({ posts: { $in: postsToFind } }).lean();
 };
 
-const addPost = async (title, image) => {
-  return await PostSchema.create({ title, image });
+const findPostsByUsersIds = async (usersIds) => {
+  return await PostSchema.find({
+    "auth.creatorId": { $in: usersIds },
+  }).lean();
+};
+
+const addPost = async (user, title, image) => {
+  const author = {
+    name: user.name,
+    image: user.image,
+    id: user.id,
+  };
+
+  return await PostSchema.create({ author, title, image });
 };
 
 module.exports = {
   findById,
   find,
-  findPostsById,
+  findPostsByIds,
+  findPostsByUsersIds,
   addPost,
 };

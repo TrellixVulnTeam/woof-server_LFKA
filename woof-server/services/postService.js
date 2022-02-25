@@ -3,34 +3,27 @@ const postRepository = require("../repositories/postRepository");
 const moment = require("moment");
 
 const getAllFeedPosts = async (userId) => {
-  const allFriends = await userService.getAllUserFriends(userId);
-  const allFriendsPosts = allFriends.map((friend) => friend.posts);
-  const allFriendsPostsCombined = allFriendsPosts.concat.apply(
-    [],
-    allFriendsPosts
-  );
+  const friends = await userService.getAllUserFriends(userId);
 
-  if (allFriendsPostsCombined.length > 0) {
-    const allFriendsPosts = await postRepository.findPostsById(
-      allFriendsPostsCombined
-    );
-
-    allFriendsPosts.map((post) => {
-      post.timeOfCreation = moment(post.timeOfCreation)
-        .startOf("hour")
-        .fromNow();
-
-      return post;
-    });
-
-    return allFriendsPosts;
+  if (friends.length === 0) {
+    return [];
   }
 
-  return [];
+  const friendsIds = friends.map((friend) => friend._id);
+  const posts = await postRepository.findPostsByUsersIds(friendsIds);
+
+  posts.map(
+    (post) =>
+      (post.timeOfCreation = moment(post.timeOfCreation)
+        .startOf("hour")
+        .fromNow())
+  );
+
+  return posts;
 };
 
-const addPost = async (title, image) => {
-  return await postRepository.addPost(title, image);
+const addPost = async (user, title, image) => {
+  return await postRepository.addPost(user, title, image);
 };
 
 module.exports = {
