@@ -2,8 +2,8 @@ const userService = require("./userService");
 const postRepository = require("../repositories/postRepository");
 const moment = require("moment");
 
-const getAllFeedPosts = async (authId) => {
-  const allFriends = await userService.getAllUserFriends(authId);
+const getAllFeedPosts = async (userId) => {
+  const allFriends = await userService.getAllUserFriends(userId);
   const allFriendsPosts = allFriends.map((friend) => friend.posts);
   const allFriendsPostsCombined = allFriendsPosts.concat.apply(
     [],
@@ -29,7 +29,7 @@ const getAllFeedPosts = async (authId) => {
   return [];
 };
 
-const addPost = async (authId, title, image) => {
+const addPost = async (title, image) => {
   return await postRepository.addPost(title, image);
 };
 

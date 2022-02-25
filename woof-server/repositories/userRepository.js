@@ -4,6 +4,10 @@ const find = async (condition) => {
   return await UserSchema.find(condition);
 };
 
+const findOne = async (condition) => {
+  return await UserSchema.findOne(condition);
+};
+
 const findById = async (id) => {
   return await UserSchema.findById(id);
 };
@@ -16,4 +20,5 @@ module.exports = {
   findById,
   find,
   register,
+  findOne,
 };
