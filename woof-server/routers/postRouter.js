@@ -13,7 +13,7 @@ router.get("/", async (req, res, next) => {
     password: decodedToken.password,
   });
 
-  const allFeedPosts = await postService.getAllFeedPosts(user.id);
+  const allFeedPosts = await postService.getAllFeedPosts(user);
   res.json(allFeedPosts);
 });
 

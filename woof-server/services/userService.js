@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 
-const getAllUserFriends = async (userId) => {
+const getAllUserFriends = async (friendsIds) => {
   return await userRepository.find({
-    friends: { $in: userId },
+    _id: { $in: friendsIds },
   });
 };
 
@@ -18,11 +18,7 @@ const register = async (userName, profileImage, password, confirmPassword) => {
 
   if (existingUser.length === 0) {
     if (password === confirmPassword) {
-      const registeredUser = await userRepository.register(
-        userName,
-        hashedPassword,
-        profileImage
-      );
+      const registeredUser = await userRepository.register(userName, hashedPassword, profileImage);
 
       return {
         user: registeredUser,
@@ -49,10 +45,7 @@ const login = async (userName, password) => {
 
   const existingUser = existingUserRes[0];
 
-  const isPasswordsMatch = await bcrypt.compare(
-    password,
-    existingUser.password
-  );
+  const isPasswordsMatch = await bcrypt.compare(password, existingUser.password);
 
   if (existingUserRes.length === 0 || !isPasswordsMatch) {
     return {

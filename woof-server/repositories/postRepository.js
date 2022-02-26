@@ -14,7 +14,7 @@ const findPostsByIds = async (postsToFind) => {
 
 const findPostsByUsersIds = async (usersIds) => {
   return await PostSchema.find({
-    "auth.creatorId": { $in: usersIds },
+    "author.id": { $in: usersIds },
   }).lean();
 };
 
