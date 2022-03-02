@@ -18,7 +18,11 @@ const register = async (userName, profileImage, password, confirmPassword) => {
 
   if (existingUser.length === 0) {
     if (password === confirmPassword) {
-      const registeredUser = await userRepository.register(userName, hashedPassword, profileImage);
+      const registeredUser = await userRepository.register(
+        userName,
+        hashedPassword,
+        profileImage
+      );
 
       return {
         user: registeredUser,
@@ -40,12 +44,15 @@ const register = async (userName, profileImage, password, confirmPassword) => {
 
 const login = async (userName, password) => {
   const existingUserRes = await userRepository.find({
-    userName,
+    name: userName,
   });
 
   const existingUser = existingUserRes[0];
 
-  const isPasswordsMatch = await bcrypt.compare(password, existingUser.password);
+  const isPasswordsMatch = await bcrypt.compare(
+    password,
+    existingUser.password
+  );
 
   if (existingUserRes.length === 0 || !isPasswordsMatch) {
     return {
