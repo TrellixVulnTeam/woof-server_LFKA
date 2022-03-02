@@ -1,27 +1,52 @@
 const userService = require("./userService");
 const postRepository = require("../repositories/postRepository");
-const moment = require("moment");
 
-const getAllFeedPosts = async (user) => {
-  const userFriends = user.friends;
-  const friends = await userService.getAllUserFriends(userFriends);
-
-  if (friends.length === 0) {
-    return [];
-  }
-
-  const friendsIds = friends.map((friend) => friend._id);
-  const posts = await postRepository.findPostsByUsersIds(friendsIds);
-
-  posts.map((post) => (post.timeOfCreation = moment(post.timeOfCreation).startOf("hour").fromNow()));
-  return posts;
+const getAllPosts = async () => {
+  return await postRepository.findAll();
 };
 
-const addPost = async (user, title, image) => {
-  return await postRepository.addPost(user, title, image);
+const addPost = async (user, title, image, tags) => {
+  return await postRepository.addPost(user, title, image, tags);
+};
+
+const updatePost = async (user, postId, data) => {
+  const properties = Object.keys(data);
+  const post = await postRepository.findById(postId);
+
+  // ======== SHOULD USE A MAP HERE LIKE SO:
+
+  // const props = {
+  //   "reactions": {
+  //     action() => {
+  //       const newReaction = {
+  //         reaction,
+  //         name,
+  //       };
+  //       post.reactions.push(newReaction);
+
+  //       return await postRepository.updatePost(post);
+  //     }
+  //   }
+  // }
+
+  if (properties.includes("reaction")) {
+    return addReaction(post, data.reaction, user);
+  }
+};
+
+const addReaction = async (post, reaction, user) => {
+  const reactionObject = {
+    reaction,
+    name: user.name,
+  };
+
+  post.reactions.push(reactionObject);
+
+  return await postRepository.updatePost(post);
 };
 
 module.exports = {
-  getAllFeedPosts,
   addPost,
+  updatePost,
+  getAllPosts,
 };

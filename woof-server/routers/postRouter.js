@@ -13,12 +13,12 @@ router.get("/", async (req, res, next) => {
     password: decodedToken.password,
   });
 
-  const allFeedPosts = await postService.getAllFeedPosts(user);
+  const allFeedPosts = await postService.getAllPosts();
   res.json(allFeedPosts);
 });
 
 router.post("/", async (req, res, next) => {
-  const { title, image } = req.body;
+  const { title, image, tags } = req.body;
 
   const token = req.headers.authorization.replace("Bearer ", "");
   const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
@@ -27,7 +27,25 @@ router.post("/", async (req, res, next) => {
     password: decodedToken.password,
   });
 
-  const addedPost = await postService.addPost(user, title, image);
+  const addedPost = await postService.addPost(user, title, image, tags);
+  res.json(addedPost);
+});
+
+router.patch("/:postId", async (req, res, next) => {
+  const { postId } = req.params;
+  const { data } = req.body;
+
+  const token = req.headers.authorization.replace("Bearer ", "");
+  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+
+  const user = await userService.findOne({
+    userName: decodedToken.userName,
+    password: decodedToken.password,
+  });
+
+  // NEED TO ADD LOGIC HERE TO VALIDATE POST BELONGS TO USER OR IF HE CAN (COMMENT || REACT)
+
+  const addedPost = await postService.updatePost(user, postId, data);
   res.json(addedPost);
 });
 

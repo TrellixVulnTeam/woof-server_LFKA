@@ -18,14 +18,22 @@ const findPostsByUsersIds = async (usersIds) => {
   }).lean();
 };
 
-const addPost = async (user, title, image) => {
+const findAll = async () => {
+  return await PostSchema.find({}).sort({ timeOfCreation: -1 }).lean();
+};
+
+const addPost = async (user, title, image, tags) => {
   const author = {
     name: user.name,
     image: user.image,
     id: user.id,
   };
 
-  return await PostSchema.create({ author, title, image });
+  return await PostSchema.create({ author, title, image, tags });
+};
+
+const updatePost = async (post) => {
+  return await post.save();
 };
 
 module.exports = {
@@ -34,4 +42,6 @@ module.exports = {
   findPostsByIds,
   findPostsByUsersIds,
   addPost,
+  findAll,
+  updatePost,
 };

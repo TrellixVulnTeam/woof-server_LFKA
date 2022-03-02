@@ -4,6 +4,7 @@ const PostSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   image: String,
   title: String,
+  tags: [String],
   author: {
     name: String,
     image: String,
