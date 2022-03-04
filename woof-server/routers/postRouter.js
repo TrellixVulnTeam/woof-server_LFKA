@@ -7,14 +7,21 @@ require("dotenv").config();
 
 router.get("/", async (req, res, next) => {
   const token = req.headers.authorization.replace("Bearer ", "");
-  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
-  const user = await userService.findOne({
-    userName: decodedToken.userName,
-    password: decodedToken.password,
-  });
 
-  const allFeedPosts = await postService.getAllPosts();
-  res.json(allFeedPosts);
+  try {
+    const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+    const user = await userService.findOne({
+      userName: decodedToken.userName,
+      password: decodedToken.password,
+    });
+
+    const allFeedPosts = await postService.getAllPosts();
+    res.json(allFeedPosts);
+  } catch (error) {
+    if (error.message.includes("jwt expired")) {
+      res.sendStatus(401);
+    }
+  }
 });
 
 router.post("/", async (req, res, next) => {

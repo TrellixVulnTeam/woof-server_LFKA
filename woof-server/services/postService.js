@@ -30,17 +30,25 @@ const updatePost = async (user, postId, data) => {
   // }
 
   if (properties.includes("reaction")) {
-    return addReaction(post, data.reaction, user);
+    return updateReaction(post, data.reaction, user);
   }
 };
 
-const addReaction = async (post, reaction, user) => {
+const updateReaction = async (post, reaction, user) => {
   const reactionObject = {
     reaction,
     name: user.name,
   };
 
-  post.reactions.push(reactionObject);
+  const isReactionExistByUserIndex = post.reactions.findIndex(
+    (postReaction) => postReaction.name === user.name && postReaction.reaction === reaction
+  );
+
+  if (isReactionExistByUserIndex > -1) {
+    post.reactions.splice(isReactionExistByUserIndex, 1);
+  } else {
+    post.reactions.push(reactionObject);
+  }
 
   return await postRepository.updatePost(post);
 };
