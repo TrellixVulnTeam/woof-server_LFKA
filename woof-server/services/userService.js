@@ -45,19 +45,21 @@ const login = async (userName, password) => {
 
   const existingUser = existingUserRes[0];
 
-  const isPasswordsMatch = await bcrypt.compare(password, existingUser.password);
+  if (existingUserRes.length > 0) {
+    const isPasswordsMatch = await bcrypt.compare(password, existingUser?.password);
 
-  if (existingUserRes.length === 0 || !isPasswordsMatch) {
-    return {
-      ok: false,
-      error: "Sorry, credentials do not match",
-    };
-  } else {
-    return {
-      user: existingUser,
-      token: generateToken(userName, existingUser.password),
-    };
+    if (isPasswordsMatch) {
+      return {
+        user: existingUser,
+        token: generateToken(userName, existingUser.password),
+      };
+    }
   }
+
+  return {
+    ok: false,
+    error: "Sorry, credentials do not match",
+  };
 };
 
 const findUser = async (condition) => {
@@ -66,6 +68,17 @@ const findUser = async (condition) => {
 
 const findOne = async (condition) => {
   return await userRepository.findOne(condition);
+};
+
+const addFriend = async (friendId, user) => {
+  if (!user.friends.includes(friendId)) {
+    user.friends.push(friendId);
+    return await userRepository.updateUser(user);
+  }
+  return {
+    ok: false,
+    message: "Already a friend",
+  };
 };
 
 const generateToken = (userName, password) => {
@@ -78,4 +91,5 @@ module.exports = {
   login,
   findUser,
   findOne,
+  addFriend,
 };

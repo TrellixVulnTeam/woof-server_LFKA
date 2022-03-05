@@ -16,9 +16,14 @@ const register = async (name, password, image) => {
   return await UserSchema.create({ name, password, image });
 };
 
+const updateUser = async (user) => {
+  return await user.save();
+};
+
 module.exports = {
   findById,
   find,
   register,
   findOne,
+  updateUser,
 };

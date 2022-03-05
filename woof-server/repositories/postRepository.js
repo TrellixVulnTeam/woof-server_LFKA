@@ -36,6 +36,10 @@ const updatePost = async (post) => {
   return await post.save();
 };
 
+const deletePost = async (post) => {
+  return await post.remove();
+};
+
 module.exports = {
   findById,
   find,
@@ -44,4 +48,5 @@ module.exports = {
   addPost,
   findAll,
   updatePost,
+  deletePost,
 };

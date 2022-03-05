@@ -1,5 +1,6 @@
 const userService = require("./userService");
 const postRepository = require("../repositories/postRepository");
+const { default: mongoose } = require("mongoose");
 
 const getAllPosts = async () => {
   return await postRepository.findAll();
@@ -34,6 +35,18 @@ const updatePost = async (user, postId, data) => {
   }
 };
 
+const deletePost = async (user, postId) => {
+  const post = await postRepository.findById(postId);
+  if (String(post.author.id) === user.id) {
+    return await postRepository.deletePost(post);
+  }
+
+  return {
+    ok: false,
+    message: "Unauthorized",
+  };
+};
+
 const updateReaction = async (post, reaction, user) => {
   const reactionObject = {
     reaction,
@@ -57,4 +70,5 @@ module.exports = {
   addPost,
   updatePost,
   getAllPosts,
+  deletePost,
 };

@@ -9,13 +9,9 @@ router.get("/", async (req, res, next) => {
   const token = req.headers.authorization.replace("Bearer ", "");
 
   try {
-    const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
-    const user = await userService.findOne({
-      userName: decodedToken.userName,
-      password: decodedToken.password,
-    });
-
+    jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
     const allFeedPosts = await postService.getAllPosts();
+
     res.json(allFeedPosts);
   } catch (error) {
     if (error.message.includes("jwt expired")) {
@@ -30,7 +26,7 @@ router.post("/", async (req, res, next) => {
   const token = req.headers.authorization.replace("Bearer ", "");
   const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
   const user = await userService.findOne({
-    userName: decodedToken.userName,
+    name: decodedToken.userName,
     password: decodedToken.password,
   });
 
@@ -46,13 +42,28 @@ router.patch("/:postId", async (req, res, next) => {
   const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
 
   const user = await userService.findOne({
-    userName: decodedToken.userName,
+    name: decodedToken.userName,
     password: decodedToken.password,
   });
 
   // NEED TO ADD LOGIC HERE TO VALIDATE POST BELONGS TO USER OR IF HE CAN (COMMENT || REACT)
 
   const addedPost = await postService.updatePost(user, postId, data);
+  res.json(addedPost);
+});
+
+router.delete("/:postId", async (req, res, next) => {
+  const { postId } = req.params;
+
+  const token = req.headers.authorization.replace("Bearer ", "");
+  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+
+  const user = await userService.findOne({
+    name: decodedToken.userName,
+    password: decodedToken.password,
+  });
+
+  const addedPost = await postService.deletePost(user, postId);
   res.json(addedPost);
 });
 
