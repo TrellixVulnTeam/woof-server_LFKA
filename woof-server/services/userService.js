@@ -1,6 +1,7 @@
 const userRepository = require("../repositories/userRepository");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const postService = require("../services/postService");
 require("dotenv").config();
 
 const getAllUserFriends = async (friendsIds) => {
@@ -69,7 +70,7 @@ const login = async (userName, password) => {
   };
 };
 
-const findUser = async (condition) => {
+const findUsers = async (condition) => {
   return await userRepository.find(condition);
 };
 
@@ -88,6 +89,21 @@ const addFriend = async (friendId, user) => {
   };
 };
 
+const getUserProfileData = async (userName) => {
+  const user = await findOne({ name: userName });
+  const userPosts = await postService.findPostsByUsersId(user._id);
+  const userFriends = await userRepository.findUsersByIds(user.friends);
+
+  const userProfileData = {
+    name: user.name,
+    image: user.image,
+    posts: userPosts,
+    friends: userFriends,
+  };
+
+  return userProfileData;
+};
+
 const generateToken = (userName, password) => {
   return jwt.sign({ userName, password }, process.env.AUTH_TOKEN_STAGING, {
     expiresIn: "1h",
@@ -98,7 +114,8 @@ module.exports = {
   getAllUserFriends,
   register,
   login,
-  findUser,
+  findUser: findUsers,
   findOne,
   addFriend,
+  getUserProfileData,
 };

@@ -12,10 +12,10 @@ const findPostsByIds = async (postsToFind) => {
   return await PostSchema.find({ posts: { $in: postsToFind } }).lean();
 };
 
-const findPostsByUsersIds = async (usersIds) => {
+const findPostsByUsersId = async (userId) => {
   return await PostSchema.find({
-    "author.id": { $in: usersIds },
-  }).lean();
+    "author.id": { $in: userId },
+  });
 };
 
 const findAll = async () => {
@@ -44,7 +44,7 @@ module.exports = {
   findById,
   find,
   findPostsByIds,
-  findPostsByUsersIds,
+  findPostsByUsersId,
   addPost,
   findAll,
   updatePost,

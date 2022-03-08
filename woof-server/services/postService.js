@@ -1,9 +1,12 @@
-const userService = require("./userService");
 const postRepository = require("../repositories/postRepository");
 const { default: mongoose } = require("mongoose");
 
 const getAllPosts = async () => {
   return await postRepository.findAll();
+};
+
+const getPostsByIds = async (postsIds) => {
+  return await postRepository.findPostsByIds(postsIds);
 };
 
 const addPost = async (user, title, image, tags) => {
@@ -54,7 +57,8 @@ const updateReaction = async (post, reaction, user) => {
   };
 
   const isReactionExistByUserIndex = post.reactions.findIndex(
-    (postReaction) => postReaction.name === user.name && postReaction.reaction === reaction
+    (postReaction) =>
+      postReaction.name === user.name && postReaction.reaction === reaction
   );
 
   if (isReactionExistByUserIndex > -1) {
@@ -66,9 +70,15 @@ const updateReaction = async (post, reaction, user) => {
   return await postRepository.updatePost(post);
 };
 
+const findPostsByUsersId = async (userId) => {
+  return await postRepository.findPostsByUsersId(userId);
+};
+
 module.exports = {
   addPost,
   updatePost,
   getAllPosts,
   deletePost,
+  getPostsByIds,
+  findPostsByUsersId,
 };

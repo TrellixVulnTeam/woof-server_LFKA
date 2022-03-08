@@ -7,7 +7,12 @@ const jwt = require("jsonwebtoken");
 router.post("/", async (req, res, next) => {
   try {
     const { userName, profileImage, password, confirmPassword } = req.body;
-    const newUser = await userService.register(userName, profileImage, password, confirmPassword);
+    const newUser = await userService.register(
+      userName,
+      profileImage,
+      password,
+      confirmPassword
+    );
     res.json(newUser);
   } catch (error) {
     console.log("Error registering: ", error.message);
@@ -63,6 +68,17 @@ router.post("/add-friend/:friendName", async (req, res, next) => {
     res.json(addFriendRes);
   } catch (error) {
     console.log("Error adding friend: ", error);
+  }
+});
+
+router.get("/profile-data/:userName", async (req, res, next) => {
+  try {
+    const { userName } = req.params;
+    const userProfileData = await userService.getUserProfileData(userName);
+
+    res.json(userProfileData);
+  } catch (error) {
+    console.log("Error searching: ", error);
   }
 });
 

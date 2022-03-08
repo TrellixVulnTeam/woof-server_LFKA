@@ -12,6 +12,10 @@ const findById = async (id) => {
   return await UserSchema.findById(id);
 };
 
+const findUsersByIds = async (usersIds) => {
+  return await UserSchema.find({ _id: { $in: usersIds } });
+};
+
 const register = async (name, password, image) => {
   return await UserSchema.create({ name, password, image });
 };
@@ -26,4 +30,5 @@ module.exports = {
   register,
   findOne,
   updateUser,
+  findUsersByIds,
 };
