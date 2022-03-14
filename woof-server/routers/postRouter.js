@@ -21,50 +21,68 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const { title, image, tags } = req.body;
+  try {
+    const { title, image, tags } = req.body;
 
-  const token = req.headers.authorization.replace("Bearer ", "");
-  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
-  const user = await userService.findOne({
-    name: decodedToken.userName,
-    password: decodedToken.password,
-  });
+    const token = req.headers.authorization.replace("Bearer ", "");
+    const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+    const user = await userService.findOne({
+      name: decodedToken.userName,
+      password: decodedToken.password,
+    });
 
-  const addedPost = await postService.addPost(user, title, image, tags);
-  res.json(addedPost);
+    const addedPost = await postService.addPost(user, title, image, tags);
+    res.json(addedPost);
+  } catch (error) {
+    if (error.message.includes("jwt expired")) {
+      res.sendStatus(401);
+    }
+  }
 });
 
 router.patch("/:postId", async (req, res, next) => {
-  const { postId } = req.params;
-  const { data } = req.body;
+  try {
+    const { postId } = req.params;
+    const { data } = req.body;
 
-  const token = req.headers.authorization.replace("Bearer ", "");
-  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+    const token = req.headers.authorization.replace("Bearer ", "");
+    const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
 
-  const user = await userService.findOne({
-    name: decodedToken.userName,
-    password: decodedToken.password,
-  });
+    const user = await userService.findOne({
+      name: decodedToken.userName,
+      password: decodedToken.password,
+    });
 
-  // NEED TO ADD LOGIC HERE TO VALIDATE POST BELONGS TO USER OR IF HE CAN (COMMENT || REACT)
+    // NEED TO ADD LOGIC HERE TO VALIDATE POST BELONGS TO USER OR IF HE CAN (COMMENT || REACT)
 
-  const addedPost = await postService.updatePost(user, postId, data);
-  res.json(addedPost);
+    const addedPost = await postService.updatePost(user, postId, data);
+    res.json(addedPost);
+  } catch (error) {
+    if (error.message.includes("jwt expired")) {
+      res.sendStatus(401);
+    }
+  }
 });
 
 router.delete("/:postId", async (req, res, next) => {
-  const { postId } = req.params;
+  try {
+    const { postId } = req.params;
 
-  const token = req.headers.authorization.replace("Bearer ", "");
-  const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+    const token = req.headers.authorization.replace("Bearer ", "");
+    const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
 
-  const user = await userService.findOne({
-    name: decodedToken.userName,
-    password: decodedToken.password,
-  });
+    const user = await userService.findOne({
+      name: decodedToken.userName,
+      password: decodedToken.password,
+    });
 
-  const addedPost = await postService.deletePost(user, postId);
-  res.json(addedPost);
+    const addedPost = await postService.deletePost(user, postId);
+    res.json(addedPost);
+  } catch (error) {
+    if (error.message.includes("jwt expired")) {
+      res.sendStatus(401);
+    }
+  }
 });
 
 module.exports = router;
