@@ -4,6 +4,10 @@ const find = async (condition) => {
   return await UserSchema.find(condition);
 };
 
+const findLean = async (condition) => {
+  return await UserSchema.find(condition).lean();
+};
+
 const findOne = async (condition) => {
   return await UserSchema.findOne(condition);
 };
@@ -27,6 +31,7 @@ const updateUser = async (user) => {
 module.exports = {
   findById,
   find,
+  findLean,
   register,
   findOne,
   updateUser,

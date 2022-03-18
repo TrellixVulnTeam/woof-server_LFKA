@@ -44,7 +44,7 @@ const register = async (userName, profileImage, password, confirmPassword) => {
 };
 
 const login = async (userName, password) => {
-  const existingUserRes = await userRepository.find({
+  const existingUserRes = await userRepository.findLean({
     name: userName,
   });
 
@@ -57,6 +57,9 @@ const login = async (userName, password) => {
     );
 
     if (isPasswordsMatch) {
+      const friends = await userRepository.findUsersByIds(existingUser.friends);
+      existingUser.friends = [...friends];
+
       return {
         user: existingUser,
         token: generateToken(userName, existingUser.password),
