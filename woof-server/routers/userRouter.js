@@ -82,4 +82,16 @@ router.get("/profile-data/:userName", async (req, res, next) => {
   }
 });
 
+router.get("/user", async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.replace("Bearer ", "");
+    const decodedToken = jwt.verify(token, process.env.AUTH_TOKEN_STAGING);
+
+    const user = await userService.getUserDataByToken(decodedToken);
+    res.json(user);
+  } catch (error) {
+    console.log("Error searching: ", error);
+  }
+});
+
 module.exports = router;

@@ -44,7 +44,7 @@ const register = async (userName, profileImage, password, confirmPassword) => {
 };
 
 const login = async (userName, password) => {
-  const existingUserRes = await userRepository.findLean({
+  const existingUserRes = await userRepository.find({
     name: userName,
   });
 
@@ -57,9 +57,6 @@ const login = async (userName, password) => {
     );
 
     if (isPasswordsMatch) {
-      const friends = await userRepository.findUsersByIds(existingUser.friends);
-      existingUser.friends = [...friends];
-
       return {
         user: existingUser,
         token: generateToken(userName, existingUser.password),
@@ -107,6 +104,24 @@ const getUserProfileData = async (userName) => {
   return userProfileData;
 };
 
+const getUserDataByToken = async (token) => {
+  const userRes = await userRepository.findLean({
+    name: token.userName,
+    password: token.password,
+  });
+
+  if (userRes.length > 0) {
+    const existingUser = userRes[0];
+    const userFriends = await userRepository.findUsersByIds(
+      existingUser.friends
+    );
+
+    return {
+      friends: userFriends,
+    };
+  }
+};
+
 const generateToken = (userName, password) => {
   return jwt.sign({ userName, password }, process.env.AUTH_TOKEN_STAGING, {
     expiresIn: "1h",
@@ -121,4 +136,5 @@ module.exports = {
   findOne,
   addFriend,
   getUserProfileData,
+  getUserDataByToken,
 };
