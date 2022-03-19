@@ -65,7 +65,7 @@ router.post("/add-friend/:friendName", async (req, res, next) => {
     }
 
     const addFriendRes = await userService.addFriend(friendRes._id, user);
-    res.json(addFriendRes);
+    res.json(friendRes);
   } catch (error) {
     console.log("Error adding friend: ", error);
   }
